@@ -45,7 +45,7 @@
 # Email:610914853@qq.com。
 
 
-![Alt text](https://github.com/dream61/main/image/123.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/WechatIMG42.png)
  ----------------
 ##    效果图如下：
 
@@ -56,23 +56,23 @@
 ### 效果图：
 
 #### 用户登录
-![Alt text](https://github.com/dream61/main/image/login.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/login.png)
 #### 首页
-![Alt text](https://github.com/dream61/main/image/home.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/home.png)
 #### 项目界面
-![Alt text](https://github.com/dream61/main/image/project.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/project.png)
 #### 环境配置界面
-![Alt text](https://github.com/dream61/main/image/env.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/env.png)
 #### 模块管理界面
-![Alt text](https://github.com/dream61/main/image/module.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/module.png)
 #### 接口管理界面
-![Alt text](https://github.com/dream61/main/image/api.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/api.png)
 
 #### 测试用例界面
-![Alt text](https://github.com/dream61/main/image/testcase.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/testcase.png)
 #### 测试场景界面
-![Alt text](https://github.com/dream61/main/image/scenario.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/scenario.png)
 #### 定时任务界面
-![Alt text](https://github.com/dream61/main/image/schedule.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/schedule.png)
 #### 用户管理界面
-![Alt text](https://github.com/dream61/main/image/user.png)
+![Alt text](https://github.com/dream61/jcxfTest/blob/main/image/user.png)
