@@ -164,8 +164,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = '610914853@qq.com'
-EMAIL_HOST_PASSWORD = 'aacthkjvaswsbech'
-DEFAULT_FROM_EMAIL = '610914853@qq.com'
+EMAIL_HOST_USER = '123@qq.com'
+EMAIL_HOST_PASSWORD = '邮件服务器密码'
+DEFAULT_FROM_EMAIL = '123@qq.com'
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
