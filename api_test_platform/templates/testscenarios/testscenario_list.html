@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">首页</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><a href="#">测试场景</a></li>
+         
+        </ol>
+      </nav>
+    <!-- Search Bar -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <form action="{% url 'testscenario_search' %}" method="get">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="按测试场景名称搜索" value="{{ request.GET.q }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">搜索</button>
+                        <a href="{% url 'testscenario_list' %}" class="btn btn-outline-primary ml-2">重置</a> <!-- Reset button -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table with Project List -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between mb-2">
+                <!-- Add Project Button -->
+                <a href="{% url 'testscenario_create' %}" class="btn btn-primary">新增</a>
+            </div>
+            <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:40px"><input type="checkbox" id="select-all"></th>
+                        <th style="width:60px">序号</th>
+                        <th>测试场景名称</th>
+                        <th>添加测试用例</th>
+                        <th>描述</th>
+                        <th>创建时间</th>
+                        <th>创建人</th>
+                        <th style="width:240px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for testscenario in testscenarios %}
+                    <tr>
+                        <td><input type="checkbox" name="testscenario_ids" value="{{ testscenario.id }}"></td>
+                        <td>{{ forloop.counter }}</td> <!-- Serial number -->
+                        <td>{{ testscenario.name }}</td>
+                        <td> <button class="btn btn-sm btn-primary" onclick="openModal({{ testscenario.id }})">添加测试用例</button>
+                        </td>
+                        <td>{{ testscenario.description }}</td>
+                      
+                        <td>{{ testscenario.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>{{ testscenario.created_by }}</td>
+                        <td>
+                            <!-- Edit and Delete buttons -->
+                            
+                            <a href="{% url 'testscenario_update' testscenario.id %}" class="btn btn-sm btn-warning">编辑</a>
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal({{ testscenario.id }})">删除</button> 
+                            <button class="run-btn" data-id="{{ testscenario.id }}" class="btn btn-sm btn-secondary">
+                                运行
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">无匹配结果。</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+            <!-- 分页导航 -->  
+ <!-- Pagination Controls -->
+ <div id="pages" class="d-flex justify-content-end">
+    <nav>
+        <ul class="pagination">
+            <li class="step-links">
+                {% if testscenarios.has_previous %}
+                <a class='active' href="?page={{ testscenarios.previous_page_number }}">上一页</a>
+                {% endif %}
+                <span class="current">
+                    第 {{ testscenarios.number }} 页 / 共 {{ testscenarios.paginator.num_pages }} 页</span>
+                {% if testscenarios.has_next %}
+                <a class='active' href="?page={{ testcases.next_page_number }}">下一页</a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- 添加测试用例模态窗口 -->
+<div class="modal fade" id="testcaseModal" tabindex="-1" role="dialog" aria-labelledby="testcaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="testcaseModalLabel">选择测试用例</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="testcaseForm" method="post" action="save_testcases">
+                    {% csrf_token %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width:60px">选择</th>
+                                <th style="width:40px">ID</th>
+                                <th>测试用例名称</th>
+                                <th>接口地址</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for testcase in testcases %}
+                            <tr>
+                                <td><input type="checkbox" name="selected_cases" value="{{ testcase.id }}"></td>
+                                <td>{{ testcase.id }}</td>
+                                <td>{{ testcase.name }}</td>
+                                <td style="word-wrap:break-word;white-space: normal;">{{ testcase.host_url.environment_value }}{{ testcase.url }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-success">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态窗口 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">删除确认</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                确定要删除这个测试场景吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 模态窗口触发 JavaScript -->
+<script>
+    function openModal(scenarioId) {
+        document.getElementById('testcaseForm').action = `/testscenarios/${scenarioId}/add_testcases/`;
+        $('#testcaseModal').modal('show');
+        $('#testcaseForm').off('click').on('click', function() {
+            save_testcases(scenarioId);
+        });
+    }
+
+    function openDeleteModal(scenarioId) {
+        $('#deleteModal').modal('show');
+        $('#confirmDelete').off('click').on('click', function() {
+            deleteScenario(scenarioId);
+        });
+    }
+
+    function deleteScenario(scenarioId) {
+        $.ajax({
+            url: `/testscenarios/${scenarioId}/delete/`,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.message === '删除成功') {
+                    $('#deleteModal').modal('hide');
+                    location.reload();  // 删除成功后刷新页面
+                }
+            },
+            error: function() {
+                alert('删除失败');
+            }
+        });
+    }
+    function save_testcases(scenarioId){
+        $.ajax({
+    type: "POST",
+    url: `/testscenarios/${scenarioId}/save_testcases/`,
+    data: $("#testcaseForm").serialize(),
+    success: function(response) {
+        // 处理成功逻辑，比如关闭模态窗口
+        $('#testcaseForm').modal('hide');
+ 
+        
+    },
+    error: function(xhr) {
+        // 显示错误信息
+        alert(xhr.responseJSON.error);
+    }
+});
+
+    }
+
+
+    
+
+    $(document).ready(function() {
+        $('.run-btn').click(function() {
+            var scenarioId = $(this).data('id');
+            $.ajax({
+                url: "/run_scenario/" + scenarioId + "/",
+                method: "POST",
+                data: {
+                    'scenario_id': scenarioId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    alert('测试场景已启动，请稍后查看测试结果！');
+                },
+                error: function(xhr) {
+                    alert('运行失败，请重试！');
+                }
+            });
+        });
+    });
+
+</script>
+
+{% endblock %}

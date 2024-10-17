@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+{% block title %}
+首页
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+ 
+    <div class="row mt-4">
+        <!-- 项目统计 -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">项目数量</h5>
+                    <p class="card-text">{{ project_count }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- 模块统计 -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">模块数量</h5>
+                    <p class="card-text">{{ module_count }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- 接口统计 -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">接口数量</h5>
+                    <p class="card-text">{{ interface_count }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- 测试用例统计 -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">测试用例数量</h5>
+                    <p class="card-text">{{ testcase_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- 测试报告 -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">最近测试报告</h5>
+                    {% if report_time %} 
+                    <p class="card-text">报告生成时间：{{ report_time|date:"Y-m-d H:i"}}，状态：{{ report_status }}</p>
+                    {% else %}  
+        <p>暂无最近报告</p>  
+    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

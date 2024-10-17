@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="mb-4">查看用例信息</h2>
+
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {% load widget_tweaks %}
+            <div class="mb-3 row">
+                <label for="id_project" class="col-form-label col-md-2">所属项目</label>
+                <div class="col-md-4">
+                    {{ testcase.relate_api.project }}
+                </div>
+                <label for="id_module" class="col-form-label col-md-2">所属模块</label>
+                <div class="col-md-4">
+                    {{ testcase.relate_api.module }}
+                </div>
+            </div>
+            
+            <div class="mb-3 row">
+                <label for="id_name" class="col-form-label col-md-2">接口名称</label>
+                <div class="col-md-4">
+                    {{ testcase.relate_api.name }}
+            </div>
+            <label for="id_name" class="col-form-label col-md-2">测试用例名称</label>
+            <div class="col-md-4">
+                {{ testcase.name }}
+        </div>
+            <label for="id_url" class="col-form-label col-md-2">是否执行</label>
+            <div class="col-md-4">
+                {{ testcase.is_executed }}
+            </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="id_url" class="form-label col-form-label col-sm-2">接口地址</label>
+                <div class="col-sm-2">
+                    {{ testcase.request_method }}
+                </div>
+                <div class="col-sm-8">
+                    {{ testcase.url }}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_headers" class="form-label">请求头</label>
+                {{ testcase.headers }}
+            </div>
+            <div class="mb-3">
+                <label for="id_input" class="form-label">请求参数</label>
+                {{ testcase.request_data }}
+            </div>
+            <div class="mb-3">
+                <label for="id_input" class="form-label">预期结果</label>
+                {{ testcase.expected_response }}
+            </div>
+            <div class="mb-3">
+                <label for="id_input" class="form-label">关联参数</label>
+                {{ testcase.extract_var }}
+            </div>
+            <div class="mb-3">
+                <label for="id_input" class="form-label">执行结果</label>
+                {{ testcase.execute_result }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_remark" class="form-label">备注</label>
+                {{ testcase.description }}
+            </div>
+            <a href="{% url 'testcase_list' %}" class="btn btn-secondary ms-2">返回用例列表</a>
+        </form>
+    </div>
+
+   
+{% endblock %}

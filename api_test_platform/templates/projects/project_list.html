@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">首页</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><a href="#">项目管理</a></li>
+         
+        </ol>
+      </nav>
+    <!-- Search Bar -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <form method="get" action="{% url 'project_list' %}">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="按项目名称或项目描述搜索" value="{{ request.GET.q }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">查询</button>
+                        <button class="btn btn-outline-secondary" type="reset">重置</button> 
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table with Project List -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between mb-2">
+                <!-- Add Project Button -->
+                <a href="{% url 'project_create' %}" class="btn btn-primary">新增</a>
+            </div>
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:40px;"><input type="checkbox" id="select-all"></th>
+                        <th style="width:60px;">序号</th>
+                        <th>项目名称</th>
+                        <th>项目描述</th>
+                        <th style="width:110px;">项目负责人</th>
+                        <th style="width:110px;">测试负责人</th>
+                        <th style="width:110px;">开发负责人</th>
+                        <th>创建时间</th>
+                        <th style="width:200px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td><input type="checkbox" name="project_ids" value="{{ project.id }}"></td>
+                        <td>{{ forloop.counter }}</td> <!-- Serial number -->
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.desc }}</td>
+                        <td>{{ project.proj_owner }}</td>
+                        <td>{{ project.test_owner }}</td>
+                        <td>{{ project.dev_owner }}</td>
+                        <td>{{ project.create_time|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <!-- Edit and Delete buttons -->
+                            <a href="{% url 'project_detail' project.id %}" class="btn btn-sm btn-info">查看</a>
+                            <a href="{% url 'project_update' project.id %}" class="btn btn-sm btn-warning">编辑</a>
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal({{ project.id }})">删除</button> 
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">无匹配结果。</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+                    <!-- 分页导航 -->  
+ <!-- Pagination Controls -->
+ <div id="pages" class="d-flex justify-content-end">
+    <nav>
+        <ul class="pagination">
+            <li class="step-links">
+                {% if projects.has_previous %}
+                <a class='active' href="?page={{ projects.previous_page_number }}">上一页</a>
+                {% endif %}
+                <span class="current">
+                    第 {{ projects.number }} 页 / 共 {{ projects.paginator.num_pages }} 页</span>
+                {% if projects.has_next %}
+                <a class='active' href="?page={{ projects.next_page_number }}">下一页</a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态窗口 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">删除确认</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                确定要删除此条记录吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     function openDeleteModal(projectId) {
+        $('#deleteModal').modal('show');
+        $('#confirmDelete').off('click').on('click', function() {
+            deleteScenario(projectId);
+        });
+    }
+
+    function deleteScenario(projectId) {
+        $.ajax({
+            url: `/projects/${projectId}/delete/`,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.message === '删除成功') {
+                    $('#deleteModal').modal('hide');
+                    location.reload();  // 删除成功后刷新页面
+                }
+            },
+            error: function() {
+                alert('删除失败');
+            }
+        });
+    }
+</script>
+{% endblock %}

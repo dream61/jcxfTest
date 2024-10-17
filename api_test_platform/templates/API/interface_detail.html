@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="mb-4">查看接口信息</h2>
+
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {% load widget_tweaks %}
+            <div class="mb-3 row">
+                <label for="id_project" class="col-form-label col-md-2">所属项目</label>
+                <div class="col-md-4">
+                    {{ interface.project }}
+                </div>
+                <label for="id_module" class="col-form-label col-md-2">所属模块</label>
+                <div class="col-md-4">
+                    {{ interface.module }}
+                </div>
+            </div>
+            
+            <div class="mb-3 row">
+                <label for="id_name" class="col-form-label col-md-2">接口名称</label>
+                <div class="col-md-4">
+                    {{ interface.name }}
+            </div>
+            <label for="id_url" class="col-form-label col-md-2">状态</label>
+            <div class="col-md-4">
+                {{ interface.status }}
+            </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="id_url" class="form-label col-form-label col-sm-2">接口地址</label>
+                <div class="col-sm-2">
+                    {{ interface.request_method }}
+                </div>
+                <div class="col-sm-8">
+                    {{ interface.url }}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_headers" class="form-label">请求头</label>
+                {{ interface.headers }}
+            </div>
+            <div class="mb-3">
+                <label for="id_input" class="form-label">入参参数</label>
+                {{ interface.request_params }}
+            </div>
+            <div class="mb-3">
+                <label for="id_out" class="form-label">出参参数</label>
+                {{ interface.response_params }}
+            </div>
+            <div class="mb-3">
+                <label for="id_remark" class="form-label">备注</label>
+                {{ interface.desc }}
+            </div>
+            <a href="{% url 'interface_list' %}" class="btn btn-secondary ms-2">返回接口列表</a>
+        </form>
+    </div>
+
+   
+{% endblock %}

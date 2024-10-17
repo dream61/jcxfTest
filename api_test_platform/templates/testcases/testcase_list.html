@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">首页</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><a href="#">测试用例</a></li>
+         
+        </ol>
+      </nav>
+    <!-- Search Bar -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <form action="{% url 'testcase_search' %}" method="get">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="按用例名称搜索" value="{{ request.GET.q }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">搜索</button>
+                        <a href="{% url 'testcase_list' %}" class="btn btn-outline-primary ml-2">重置</a> <!-- Reset button -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table with Project List -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between mb-2">
+                <!-- Add Project Button -->
+                <a href="{% url 'testcase_create' %}" class="btn btn-primary">新增</a>
+            </div>
+            <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:40px"><input type="checkbox" id="select-all"></th>
+                        <th style="width:60px">序号</th>
+                        <th>项目名称</th>
+                        <th>模块名称</th>
+                        <th>关联接口</th>
+                        <th>用例名称</th>
+                        <th >接口地址</th>
+                        <th>请求头</th>
+                        <th>请求方式</th>
+                        <th>预期结果</th>
+                        <th>创建人</th>
+                        <th >创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for testcase in testcases %}
+                    <tr>
+                        <td><input type="checkbox" name="testcase_ids" value="{{ testcase.id }}"></td>
+                        <td>{{ forloop.counter }}</td> <!-- Serial number -->
+                        <td>{{ testcase.relate_api.project }}</td>
+                        <td>{{ testcase.relate_api.module }}</td>
+                        <td>{{ testcase.relate_api }}</td>
+                        <td>{{ testcase.name }}</td>
+                        <td>{{ testcase.host_url.environment_value }}{{ testcase.url }}</td>
+                        <td>{{ testcase.headers }}</td>
+                        <td>{{ testcase.request_method }}</td>
+                        <td style="text-overflow:ellipsis">{{ testcase.expected_response }}</td>
+                        <td>{{ testcase.created_by }}</td>
+                        <td>{{ testcase.created_at|date:"Y-m-d H:i" }}</td>
+                        <td style="width:240px;">
+                            <!-- Edit and Delete buttons -->
+                            <a href="{% url 'testcase_detail' testcase.id %}" class="btn btn-sm btn-info">查看</a>
+                            <a href="{% url 'testcase_update' testcase.id %}" class="btn btn-sm btn-warning">编辑</a>
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal({{ testcase.id }})">删除</button> 
+                            <a href="{% url 'execute_test_case' testcase.id %}" class="btn btn-sm btn-secondary">
+                                运行
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="13" class="text-center">无匹配结果。</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+            <!-- 分页导航 -->  
+ <!-- Pagination Controls -->
+ <div id="pages" class="d-flex justify-content-end">
+    <nav>
+        <ul class="pagination">
+            <li class="step-links">
+                {% if testcases.has_previous %}
+                <a class='active' href="?page={{ apis.previous_page_number }}">上一页</a>
+                {% endif %}
+                <span class="current">
+                    第 {{ testcases.number }} 页 / 共 {{ testcases.paginator.num_pages }} 页</span>
+                {% if testcases.has_next %}
+                <a class='active' href="?page={{ testcases.next_page_number }}">下一页</a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态窗口 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">删除确认</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                确定要删除此条记录吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     function openDeleteModal(testcaseId) {
+        $('#deleteModal').modal('show');
+        $('#confirmDelete').off('click').on('click', function() {
+            deleteTestcase(testcaseId);
+        });
+    }
+
+    function deleteTestcase(testcaseId) {
+        $.ajax({
+            url: `/testcases/${testcaseId}/delete/`,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.message === '删除成功') {
+                    $('#deleteModal').modal('hide');
+                    location.reload();  // 删除成功后刷新页面
+                }
+            },
+            error: function() {
+                alert('删除失败');
+            }
+        });
+    }
+</script>
+{% endblock %}

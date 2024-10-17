@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">首页</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'project_list' %}">项目管理</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><a href="#">项目信息</a></li>
+         
+        </ol>
+      </nav>
+    
+    
+        <div class="mb-3 row">
+            <label for="id_name" class="col-form-label col-md-2">项目名称: {{ project.name }}</label>
+             </div>
+        
+          <div class="mb-3 row">
+              <label for="id_desc" class="col-form-label col-md-2">项目描述: {{ project.desc }}</label>
+              
+          </div>
+          <div class="mb-3 row">
+            <label for="id_pmp" class="col-form-label col-md-2">项目负责人: {{ project.proj_owner }}</label>
+            
+        </div>
+        <div class="mb-3 row">
+            <label for="id_test" class="col-form-label col-md-2">测试负责人: {{ project.test_owner }}</label>   
+        </div>
+        <div class="mb-3 row">
+          <label for="id_dep" class="col-form-label col-md-2">开发负责人:{{ project.dev_owner }}</label>
+          
+      </div>
+
+    </div>
+
+{% endblock %}

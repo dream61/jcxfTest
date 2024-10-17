@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block title %}模块{% endblock %}
+{% block content %}
+
+<div class="row d-flex align-items-start">
+   
+    <!-- 项目列表 -->
+    <div class="col-md-3">
+        <ul class="list-group" id="treeMenu">
+            <!-- 所有项目 -->
+            <li class="list-group-item">
+                <a  href="{% url 'module_list' %}">所有项目</a>
+                <ul class="collapse show" id="all-projects">
+                    {% for project in projects %}
+                    <li class="list-group-item">
+                        <a  href="?project_id={{ project.id }}" aria-expanded="false" aria-controls="project-{{ project.id }}">{{ project.name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+<div class="col-md-9">
+<div class="container mt-5">
+    <!-- Search Bar -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <form action="{% url 'module_search' %}" method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="输入模块名称或负责人搜索模块" value="{{ module.name }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">搜索</button>
+                        <a href="{% url 'module_list' %}" class="btn btn-outline-primary ml-2">重置</a> <!-- Reset button -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table with Project List -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between mb-2">
+                <!-- Add Project Button -->
+                <a href="{% url 'module_create' %}" class="btn btn-primary">添加模块</a>
+            </div>
+            <table class="table table-bordered table-hover table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:40px;"><input type="checkbox"></th> <!-- Select all checkbox -->
+                        <th style="width:60px;">序号</th>
+                        <th>模块名称</th>
+                        <th>所属项目</th>
+                        <th>测试负责人</th>
+                        <th>模块描述</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>测试结果统计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for module in modules %}
+                    <tr>
+                        <td><input type="checkbox"></td> <!-- Individual row checkbox -->
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="#">{{ module.name }}</a></td> <!-- Link styled -->
+                        <td>{{ module.belong_project.name }}</td>
+                        <td>{{ module.test_owner }}</td>
+                        <td>{{ module.desc }}</td>
+                        <td>{{ module.create_time|date:"Y-n-d H:i" }}</td>
+                        <td>{{ module.update_time|date:"Y-n-d H:i" }}</td>
+                        <td>
+                            <a href="{% url 'module_detail' module.id %}" class="btn btn-sm btn-info">查看</a>
+                            <a href="{% url 'module_update' module.id %}" class="btn btn-sm btn-warning">编辑</a>
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal({{ module.id }})">删除</button> 
+                        </td> <!-- View button -->
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center">暂无模块</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pages" class="d-flex justify-content-end">
+        <nav>
+            <ul class="pagination">
+                <li class="step-links">
+                    {% if modules.has_previous %}
+                    <a class='active' href="?page={{ modules.previous_page_number }}">上一页</a>
+                    {% endif %}
+                    <span class="current">
+                        第 {{ modules.number }} 页 / 共 {{ modules.paginator.num_pages }} 页</span>
+                    {% if modules.has_next %}
+                    <a class='active' href="?page={{ modules.next_page_number }}">下一页</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+</div>
+
+</div>
+<!-- 添加 CSS 控制树状结构样式 -->
+<style>
+    #treeMenu ul {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+
+    #treeMenu ul li {
+        margin: 5px 0;
+    }
+</style>
+<!-- 删除确认模态窗口 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">删除确认</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                确定要删除此条记录吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     function openDeleteModal(moduleId) {
+        $('#deleteModal').modal('show');
+        $('#confirmDelete').off('click').on('click', function() {
+            deleteModule(moduleId);
+        });
+    }
+
+    function deleteModule(moduleId) {
+        $.ajax({
+            url: `/modules/${moduleId}/delete/`,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.message === '删除成功') {
+                    $('#deleteModal').modal('hide');
+                    location.reload();  // 删除成功后刷新页面
+                }
+            },
+            error: function() {
+                alert('删除失败');
+            }
+        });
+    }
+</script>
+{% endblock %}

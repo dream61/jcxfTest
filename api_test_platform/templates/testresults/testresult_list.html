@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">首页</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><a href="#">测试结果</a></li>
+         
+        </ol>
+      </nav>
+    <!-- Search Bar -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <form action="{% url 'testresult_search' %}" method="get">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="按测试场景名称搜索" value="{{ request.GET.q }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">搜索</button>
+                        <a href="{% url 'testresult_list' %}" class="btn btn-outline-primary ml-2">重置</a> <!-- Reset button -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table with Project List -->
+    <div class="row">
+        <div class="col-md-12">
+           
+            <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:40px"><input type="checkbox" id="select-all"></th>
+                        <th style="width:60px">序号</th>
+                        <th>测试场景名称</th>
+                        <th>执行状态</th>
+                        <th>执行时间</th>
+                        <th>执行人</th>
+                        <th style="width:240px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in testresults %}
+                    <tr>
+                        <td><input type="checkbox" name="testscenario_ids" value="{{ testscenario.id }}"></td>
+                        <td>{{ forloop.counter }}</td> <!-- Serial number -->
+                        <td>{{ result.scenario.name }}</td>
+                        <td> {{ result.get_status_display }}</td>
+                        <td>{{ result.execution_time|date:"Y-m-d H:i" }}</td>
+                      
+                        <td>{{ result.executed_by.username }}</td>
+                       
+                        <td>
+                            {% if result.testreport %}
+                            <a href="{% url 'download_report' result.id %}">下载报告</a>
+                            {% else %}
+                            无报告
+                            {% endif %}
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal({{ result.id }})">删除</button> 
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">无匹配结果。</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+            <!-- 分页导航 -->  
+ <!-- Pagination Controls -->
+ <div id="pages" class="d-flex justify-content-end">
+    <nav>
+        <ul class="pagination">
+            <li class="step-links">
+                {% if testresults.has_previous %}
+                <a class='active' href="?page={{ testresults.previous_page_number }}">上一页</a>
+                {% endif %}
+                <span class="current">
+                    第 {{ testresults.number }} 页 / 共 {{ testresults.paginator.num_pages }} 页</span>
+                {% if testresults.has_next %}
+                <a class='active' href="?page={{ testresults.next_page_number }}">下一页</a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态窗口 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">删除确认</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                确定要删除此条测试记录吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     function openDeleteModal(resultId) {
+        $('#deleteModal').modal('show');
+        $('#confirmDelete').off('click').on('click', function() {
+            deleteScenario(resultId);
+        });
+    }
+
+    function deleteScenario(resultId) {
+        $.ajax({
+            url: `/testresults/${resultId}/delete/`,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.message === '删除成功') {
+                    $('#deleteModal').modal('hide');
+                    location.reload();  // 删除成功后刷新页面
+                }
+            },
+            error: function() {
+                alert('删除失败');
+            }
+        });
+    }
+</script>
+{% endblock %}

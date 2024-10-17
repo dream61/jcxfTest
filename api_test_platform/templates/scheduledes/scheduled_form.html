@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">首页</a></li>
+          <li class="breadcrumb-item"><a href="#">定时任务</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><a href="#">{% if form.instance.pk %}编辑任务{% else %}添加任务{% endif %}</a></li>
+         
+        </ol>
+      </nav>
+  
+    <!-- 表单 -->
+    <div class="ml-md-4">
+    <form method="POST" class="needs-validation" novalidate>
+        {% csrf_token %}
+        {% load widget_tweaks %}
+        <div class="mb-3 row">
+            <label for="id_name" class="form-label">任务名称：</label>
+                {% render_field form.name class="form-control" style="width:360px;" required="required" placeholder="请输入用户名称" %}  
+        </div>
+
+        <div class="mb-3 row">
+            <label for="id_remark" class="form-label">任务执行时间：</label>
+            {% render_field form.cron_expression class="form-control" style="width:400px;" required="required" %}
+        </div>
+        <div class="mb-3 row">
+            <label for="id_remark" class="form-label">测试场景：</label>
+            {% render_field form.testscenario class="form-control" style="width:400px;" required="required" %}
+        </div>
+        <div class="mb-3 row">
+            <label for="id_remark" class="form-label">邮箱：</label>
+            {% render_field form.email class="form-control" style="width:400px;" required="required" %}
+        </div>
+  
+
+        <!-- 错误提示 -->
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                <li>{{ field }}: {{ errors|striptags }}</li>
+            {% endfor %}        
+            </ul>
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">保存</button>
+        <a href="{% url 'scheduled_list' %}" class="btn btn-secondary">返回</a>
+    </form>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>登录</title>  
+    <style>  
+        body {  
+            background-color: black;  
+            color: white;  
+            font-family: Arial, sans-serif;  
+            display: flex;  
+            justify-content: center;  
+            align-items: center;  
+            height: 100vh;  
+            margin: 0;  
+        }  
+        .login-container {  
+            background-color: #333;  
+            padding: 20px;  
+            border-radius: 8px;  
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
+            width: 400px;  
+            text-align: center;  
+        }  
+        .login-container h2 {  
+            margin-top: 0;  
+        }  
+        .login-container input[type="text"],  
+        .login-container input[type="password"] {  
+            width: calc(100% - 22px);  
+            padding: 10px;  
+            margin: 10px 0;  
+            border: 1px solid #555;  
+            border-radius: 4px;  
+        }  
+        .login-container button {  
+            width: 100%;  
+            padding: 10px;  
+            background-color: #4CAF50;  
+            color: white;  
+            border: none;  
+            border-radius: 4px;  
+            cursor: pointer;  
+        }  
+        .login-container button:hover {  
+            background-color: #45a049;  
+        }  
+        .login-container .forget-password {  
+            display: block;  
+            text-align: right;  
+            margin-top: 10px;  
+            margin-bottom: 10px;  
+            font-size: 16px; 
+            
+        }
+        .login-container a { 
+            color: #fff; 
+        }
+        .login-container a:hover {  
+            
+            color: #4CAF50; 
+        }  
+        .messages {  
+            margin-top: 10px;  
+        }
+        .left-align {  
+          text-align: left; 
+          margin-left: 20px;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <div class="login-container">  
+        <h2>欢迎登录</h2>  
+        <form method="post">  
+            {% csrf_token %}  
+            <div class="form-group">
+                <label for="username" class="left-align">用户名:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password" class="left-align">密码:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="messages"> 
+            {% if error_message %}
+                <p class="text-danger">{{ error_message }}</p>
+            {% endif %}
+        </div> 
+
+            <button type="submit">登录</button>  
+            <div class="forget-password">  
+                <a href="{% url 'register' %}">没有账号？立即注册</a>  
+            </div>  
+           
+        </form>  
+    </div>  
+</body>  
+</html>

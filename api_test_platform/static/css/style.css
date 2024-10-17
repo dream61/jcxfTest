@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+}
+
+.container {
+    width: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+   
+}
+
+label, input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 一行四列 */
+    gap: 10px;
+}
+
+.card {
+    flex: 1 1 25%; /* 每个元素占据容器宽度的22% */
+    margin: 10px;
+    min-width: 200px; /* 保证最小宽度 */
+}
+
+.card-link {
+    color: rgb(232, 43, 43); /* 将链接颜色设为红色 */
+}
+
+.card-link:hover {
+    color: rgb(24, 226, 162); /* 鼠标悬停时变为绿色 */
+}
+.table-responsive {
+    overflow-x: auto;
+}
+table {
+    table-layout: auto;
+    width: 100%;
+}
+.table-responsive {
+    overflow-x: auto; /* 当表格超出容器宽度时，显示滚动条 */
+}
+.table-responsive table.table-bordered th,
+.table-responsive table.table-bordered td
+ {
+    text-overflow: ellipsis !important;
+    word-break: break-all;
+    word-wrap:break-word;
+    white-space: normal; 
+    
+    
+}
+
+.toast {
+    display: none;
+}
+
+.toast.show {
+    display: block;
+    background-color: #28a745;  /* 设置绿色背景 */
+    opacity: 1;  /* 使其完全不透明 */
+    color: #fff;  /* 白色文字 */
+    position: fixed;
+    top: 10px;  /* 顶部距离 */
+    left: 50%;
+    transform: translateX(-50%);  /* 水平居中 */
+    z-index: 9999;  /* 确保在其他元素上层 */
+}

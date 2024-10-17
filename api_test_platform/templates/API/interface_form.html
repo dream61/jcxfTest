@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">首页</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'interface_list' %}">接口管理</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="#">{% if form.instance.pk %}编辑接口{% else %}添加接口{% endif %}</a></li>
+             
+            </ol>
+          </nav>
+    
+
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {% load widget_tweaks %}
+            <div class="mb-3 row">
+                <label for="id_project" class="col-form-label col-md-2">所属项目</label>
+                <div class="col-md-4">
+                    {% render_field form.project class="form-control" style="width:200px;" required="required" %}
+                </div>
+                <label for="id_module" class="col-form-label col-md-2">所属模块</label>
+                <div class="col-md-4">
+                    {% render_field form.module class="form-control" tyle="width:200px;" required="required" %}
+                </div>
+            </div>
+            
+            <div class="mb-3 row">
+                <label for="id_name" class="col-form-label col-md-2">接口名称</label>
+                <div class="col-md-4">
+                {% render_field form.name class="form-control" style="width:360px;" required="required" placeholder="请输入接口名称" %}
+            </div>
+            <label for="id_url" class="col-form-label col-md-2">状态</label>
+            <div class="col-md-4">
+                {% render_field form.status class="form-control" style="width:200px;" required="required" %}
+            </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="id_url" class="form-label col-form-label col-sm-2">接口地址</label>
+                <div class="col-sm-2">
+                    {% render_field form.request_method class="form-control" style="width:140px;" required="required" %}
+                </div>
+                <div class="col-sm-8">
+                    {% render_field form.url class="form-control" style="width:500px;" required="required" placeholder="请输入接口地址" %}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_headers" class="form-label">请求头</label>
+                {% render_field form.headers class="form-control" style="height:200px;" required="required" %}
+            </div>
+            <div class="mb-3">
+                <label for="id_input" class="form-label">入参参数</label>
+                {% render_field form.request_params class="form-control" style="height:200px;"%}
+            </div>
+            <div class="mb-3">
+                <label for="id_out" class="form-label">出参参数</label>
+                {% render_field form.response_params class="form-control" style="height:200px;"%}
+            </div>
+            <div class="mb-3">
+                <label for="id_remark" class="form-label">备注</label>
+                {% render_field form.desc class="form-control" style="width:400px;height:200px;"%}
+            </div>
+             <!-- 错误提示 -->
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                <li>{{ field }}: {{ errors|striptags }}</li>
+            {% endfor %}        
+            </ul>
+        </div>
+        {% endif %}
+
+            <button type="submit" class="btn btn-primary">保存</button>
+            <a href="{% url 'interface_list' %}" class="btn btn-secondary ms-2">返回接口列表</a>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        // JavaScript 代码实现项目和模块的级联
+        document.getElementById("id_project").addEventListener("change", function() {
+            let projectId = this.value; // 获取选中的项目ID
+            let moduleSelect = document.getElementById("id_module"); // 获取模块的下拉框
+
+            // 发起Ajax请求，获取该项目对应的模块
+            fetch(`/get_modules/${projectId}/`) // 后端API接口
+                .then(response => response.json())
+                .then(data => {
+                    // 清空现有的模块选项
+                    moduleSelect.innerHTML = '';
+                    // 迭代返回的模块数据并添加到下拉框中
+                    data.modules.forEach(function(module) {
+                        let option = document.createElement("option");
+                        option.value = module.id;
+                        option.text = module.name;
+                        moduleSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching modules:', error));
+        });
+    </script>
+{% endblock %}

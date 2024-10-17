@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">首页</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'environment_list' %}">环境配置</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><a href="#">{% if form.instance.pk %}编辑环境{% else %}添加环境{% endif %}</a></li>
+     
+    </ol>
+  </nav>
+  <div class="ml-md-4">
+  <form method="POST" class="needs-validation" novalidate>
+    {% csrf_token %}
+    {% load widget_tweaks %}
+    <div class="mb-3 row">
+        <label for="id_name" class="form-label">环境名称</label>
+        <div class="ml-md-4">
+        {% render_field form.environment_name class="form-control" style="width:360px;" required="required" placeholder="请输入环境名称" %}
+         </div>
+         </div>
+         <div class="mb-3 row">
+          <label for="id_pmp" class="form-label">环境地址</label>
+          <div class="ml-md-4">
+          {% render_field form.environment_value class="form-control" style="width:360px;"%}
+          </div>
+      </div>
+      <div class="mb-3 row">
+          <label for="id_desc" class="form-label">环境描述</label>
+          <div class="ml-md-4">
+          {% render_field form.description class="form-control" style="width:360px;"%}
+        </div>
+      </div>
+   <!-- 错误提示 -->
+   {% if form.errors %}
+   <div class="alert alert-danger">
+       <ul>
+           {% for field in form %}
+               {% if field.errors %}
+                   <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+               {% endif %}
+           {% endfor %}
+       </ul>
+   </div>
+{% endif %}
+  
+    <button type="submit" class="btn btn-primary">保存</button>
+    <a href="{% url 'environment_list' %}" class="btn btn-secondary">返回</a>
+</form>
+</div>
+</div>
+{% endblock %}

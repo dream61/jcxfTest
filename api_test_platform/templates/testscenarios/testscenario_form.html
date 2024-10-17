@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="mb-4">{% if form.instance.pk %}编辑测试场景{% else %}添加测试场景{% endif %}</h2>
+
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {% load widget_tweaks %}
+            <div class="mb-3 row">
+                <label for="id_name" class="col-form-label col-md-2">场景名称</label>
+                <div class="col-md-4">
+                {% render_field form.name class="form-control" style="width:360px;" required="required" placeholder="请输入接口名称" %}
+                 </div>
+                 </div>
+            
+            <div class="mb-3 row">
+                <label for="id_remark" class="form-label">描述</label>
+                {% render_field form.description class="form-control" style="width:400px;height:200px;"%}
+            </div>
+
+            <button type="submit" class="btn btn-primary">保存</button>
+            <a href="{% url 'testscenario_list' %}" class="btn btn-secondary ms-2">返回用例列表</a>
+        </form>
+        {% if result %}
+        <div class="alert alert-info">
+            执行结果：{{ result }}
+        </div>
+    {% endif %}
+    </div>
+   
+{% endblock %}

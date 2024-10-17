@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">首页</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'testcase_list' %}">测试用例</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="#">{% if form.instance.pk %}编辑测试用例{% else %}添加测试用例{% endif %}</a></li>
+             
+            </ol>
+          </nav>
+          <div class="ml-md-4">
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {% load widget_tweaks %}
+            
+            <div class="mb-3 row">
+                <label for="id_name" class="col-form-label col-md-2">用例名称</label>
+                <div class="col-md-4">
+                {% render_field form.name class="form-control" style="width:360px;" required="required" placeholder="请输入接口名称" %}
+                 </div>
+                 <button type="submit" name="run_case" class="btn btn-success ms-2 ml-md-4">运行</button>
+                 </div>
+            <div class="mb-3 row">
+                <label for="id_name" class="col-form-label col-md-2">接口名称</label>
+                <div class="col-md-4">
+                {% render_field form.relate_api class="form-control" style="width:360px;" required="required" placeholder="请输入接口名称" %}
+            </div>
+            </div>
+        
+            <div class="mb-3 row">
+                <label for="id_url" class="form-label col-form-label col-sm-2">接口地址</label>
+                <div class="col-sm-2">
+                    {% render_field form.request_method class="form-control" style="width:140px;" required="required" %}
+                </div>
+                <div class="col-sm-4">
+                    {% render_field form.host_url class="form-control" style="width:100px;" required="required" placeholder="请输入接口地址" %}
+                </div>
+                <div class="col-sm-6">
+                    {% render_field form.url class="form-control" style="width:400px;" required="required" placeholder="请输入接口地址" %}
+                </div>
+            </div>
+            
+            <div class="mb-3 row">
+                <label for="id_headers" class="form-label">请求头</label>
+                {% render_field form.headers class="form-control" style="height:200px;" %}
+            </div>
+            <div class="mb-3 row">
+                <label for="id_input" class="form-label">请求参数</label>
+                {% render_field form.request_data class="form-control" style="height:200px;"%}
+            </div>
+            <div class="mb-3 row">
+                <label for="id_input" class="form-label">body</label>
+                {% render_field form.body class="form-control" style="height:200px;"%}
+            </div>
+            <div class="mb-3 row">
+                <label for="id_out" class="form-label">预期结果</label>
+                {% render_field form.expected_response class="form-control" style="height:200px;"%}
+            </div>
+            <div class="mb-3 row">
+                <label for="id_relate" class="form-label">关联参数</label>
+                {% render_field form.extract_var class="form-control" style="height:200px;"%}
+            </div>
+            <div class="mb-3 row">
+                <label for="id_remark" class="form-label">备注</label>
+                {% render_field form.description class="form-control" style="width:400px;height:200px;"%}
+            </div>
+              <!-- 错误提示 -->
+     {% if form.errors %}
+     <div class="alert alert-danger">
+         <ul>
+             {% for field, errors in form.errors.items %}
+             <li>{{ field }}: {{ errors|striptags }}</li>
+         {% endfor %}        
+         </ul>
+     </div>
+     {% endif %}
+
+            <button type="submit" class="btn btn-primary">保存</button>
+            <a href="{% url 'testcase_list' %}" class="btn btn-secondary ms-2">返回用例列表</a>
+        </form>
+        </div>
+        {% if result %}
+        <div class="alert alert-info">
+            执行结果：{{ result }}
+        </div>
+    {% endif %}
+    </div>
+   
+{% endblock %}

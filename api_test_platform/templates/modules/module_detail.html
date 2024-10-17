@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">首页</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'module_list' %}">模块管理</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="#">查看模块信息</a></li>
+             
+            </ol>
+          </nav>
+
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {% load widget_tweaks %}
+            <div class="mb-3 row">
+                <label for="id_project" class="col-form-label col-md-2">模块名称</label>
+                <div class="col-md-4">
+                    {{ module.name }}
+                </div>
+                <label for="id_module" class="col-form-label col-md-2">所属模块</label>
+                <div class="col-md-4">
+                    {{ module.belong_project.name }}
+                </div>
+            </div>
+            
+            <div class="mb-3 row">
+                <label for="id_name" class="col-form-label col-md-2">测试负责人</label>
+                <div class="col-md-4">
+                    {{ module.test_owner }}
+            </div>
+
+            </div>
+
+            
+            <div class="mb-3">
+                <label for="id_remark" class="form-label">备注</label>
+                {{ module.desc }}
+            </div>
+            <a href="{% url 'module_list' %}" class="btn btn-secondary ms-2">返回模块列表</a>
+        </form>
+    </div>
+
+   
+{% endblock %}

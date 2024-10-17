@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">首页</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'module_list' %}">模块管理</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><a href="#">{% if form.instance.pk %}编辑模块{% else %}添加模块{% endif %}</a></li>
+     
+    </ol>
+  </nav>
+  <div class="ml-md-4">
+  <form method="POST" class="needs-validation" novalidate>
+    {% csrf_token %}
+    {% load widget_tweaks %}
+    <div class="mb-3 row">
+        <label for="id_name" class="form-label">模块名称</label>
+        <div class="ml-md-4">
+        {% render_field form.name class="form-control" style="width:360px;" required="required" placeholder="请输入模块名称" %}
+         </div>
+         </div>
+    
+    <div class="mb-3 row">
+        <label for="id_project" class="form-label">所属项目</label>
+        <div class="ml-md-4">
+        {% render_field form.belong_project class="form-control" style="width:360px;"%}
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="id_remark" class="form-label">测试负责人</label>
+        <div class="ml-md-2">
+        {% render_field form.test_owner class="form-control"%}
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="id_desc" class="form-label">描述</label>
+        <div class="ml-md-4">
+        {% render_field form.desc class="form-control"%}
+        </div>
+    </div>
+     <!-- 错误提示 -->
+     {% if form.errors %}
+     <div class="alert alert-danger">
+         <ul>
+             {% for field, errors in form.errors.items %}
+             <li>{{ field }}: {{ errors|striptags }}</li>
+         {% endfor %}        
+         </ul>
+     </div>
+     {% endif %}
+
+    <button type="submit" class="btn btn-primary">保存</button>
+    <a href="{% url 'module_list' %}" class="btn btn-secondary">返回</a>
+</form>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}接测先锋自动化测试平台{% endblock %}</title>
+    {% load static %}  
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
+    <style>
+        .brand {
+            background-color: #000;
+            font-size: 20px;
+            color: aliceblue;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .dropdown-menu {
+            right: 0;
+            left: auto;
+        }
+
+        .sidebar {
+            background-color: #343a40;
+            height: 100vh;
+            color: white;
+        }
+
+        .sidebar .nav-link {
+            color: white;
+        }
+
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+            color: #ffffff;
+        }
+
+        .sidebar-sticky {
+            padding-top: 20px;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            padding: 10px 0;
+        }
+
+        .footer .text-muted {
+            font-size: 14px;
+        }
+    </style>
+    {% block extra_head %}
+    <!-- 可以在子模板中扩展的头部块 -->
+    {% endblock %}
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="brand">
+        <a href="#" style="color: white;">接测先锋</a>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                {{ user.username }} <!-- Display logged-in username -->
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">个人信息</a>
+                <a class="dropdown-item" href="#">修改密码</a>
+                <a class="dropdown-item" href="{% url 'logout' %}">退出</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left-side navigation -->
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">首页</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'project_list' %}">项目管理</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'environment_list' %}">配置环境</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'module_list' %}">模块管理</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'interface_list' %}">接口管理</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'testcase_list' %}">测试用例</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'testscenario_list' %}">测试场景</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'testresult_list' %}">测试结果</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'scheduled_list' %}">定时任务</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_list' %}">用户管理</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Right-side main content -->
+            <main role="main" class="col-md-10 ml-sm-auto px-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                    {% block content %}
+                    <!-- 子模板的具体内容将出现在这里 -->
+                    {% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="toast" id="toastMessage" data-delay="3000" style="position: absolute; top: 10px; right: 10px;">
+      <div class="toast-body">
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+      </div>
+    </div>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        $('.toast').toast('show');
+      });
+    </script>
+    {% endif %}
+    
+    <!-- Footer -->
+    <footer class="footer text-center">
+        <div class="container">
+            <span class="text-muted">© 2024 API 自动化测试平台</span>
+        </div>
+    </footer>
+
+ 
+    {% block extra_script %}
+    <!-- 可以在子模板中扩展的脚本块 -->
+    {% endblock %}
+</body>
+
+</html>
