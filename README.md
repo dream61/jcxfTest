@@ -1,4 +1,4 @@
-# DoTest接口自动化测试平台
+# jcxfTest接口自动化测试平台
 ### Django + Python3.6 +Bootstarp+Apscheduler+Sqlite+Redis 实现的接口自动化测试平台。
 
 ----------------
@@ -45,7 +45,7 @@
 # Email:610914853@qq.com。
 
 
-![Alt text](https://github.com/liwanlei/FXTest/blob/master/image/123.png)
+![Alt text](https://github.com/dream61/main/image/123.png)
  ----------------
 ##    效果图如下：
 
@@ -56,25 +56,23 @@
 ### 效果图：
 
 #### 用户登录
-![Alt text](https://github.com/liwanlei/FXTest/blob/master/image/denglu.png)
+![Alt text](https://github.com/dream61/main/image/login.png)
 #### 首页
-![Alt text](https://github.com/liwanlei/FXTest/blob/master/image/首页.png)
+![Alt text](https://github.com/dream61/main/image/home.png)
 #### 项目界面
-![Alt text](https://github.com/liwanlei/1.png)
+![Alt text](https://github.com/dream61/main/image/project.png)
 #### 环境配置界面
-![Alt text](https://github.com/1.png)
+![Alt text](https://github.com/dream61/main/image/env.png)
 #### 模块管理界面
-![Alt text](https://github.com/1.png)
+![Alt text](https://github.com/dream61/main/image/module.png)
 #### 接口管理界面
-![Alt text](https://github.com/image/接口.png)
+![Alt text](https://github.com/dream61/main/image/api.png)
 
 #### 测试用例界面
-![Alt text](https://github.com/png)
+![Alt text](https://github.com/dream61/main/image/testcase.png)
 #### 测试场景界面
-![Alt text](https://github.com/png)
+![Alt text](https://github.com/dream61/main/image/scenario.png)
 #### 定时任务界面
-![Alt text](https://github.com/.png)
-#### 定时任务编辑界面
-![Alt text](https://github.com/.png)
+![Alt text](https://github.com/dream61/main/image/schedule.png)
 #### 用户管理界面
-![Alt text](https://github.com/.png)
+![Alt text](https://github.com/dream61/main/image/user.png)
