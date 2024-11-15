@@ -70,7 +70,7 @@
                             <!-- Edit and Delete buttons -->
                             <a href="{% url 'testcase_detail' testcase.id %}" class="btn btn-sm btn-info">查看</a>
                             <a href="{% url 'testcase_update' testcase.id %}" class="btn btn-sm btn-warning">编辑</a>
-                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal({{ testcase.id }})">删除</button> 
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal('{{ testcase.id }}')">删除</button> 
                             <a href="{% url 'execute_test_case' testcase.id %}" class="btn btn-sm btn-secondary">
                                 运行
                             </a>
@@ -102,6 +102,12 @@
             </li>
         </ul>
     </nav>
+    <!-- 添加每页条数选择框 -->
+    <select id="per-page-select" onchange="changePerPage(this.value)">
+        {% for option in per_page_options %}
+        <option value="{{ option }}" {% if option == per_page %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+    </select>
 </div>
 
         </div>

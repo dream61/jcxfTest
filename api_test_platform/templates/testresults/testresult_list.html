@@ -89,6 +89,12 @@
             </li>
         </ul>
     </nav>
+    <!-- 添加每页条数选择框 -->
+    <select id="per-page-select" onchange="changePerPage(this.value)">
+        {% for option in per_page_options %}
+        <option value="{{ option }}" {% if option == per_page %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+    </select>
 </div>
 
 

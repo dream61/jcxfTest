@@ -75,16 +75,22 @@
         <ul class="pagination">
             <li class="step-links">
                 {% if users.has_previous %}
-                <a class='active' href="?page={{ users.previous_page_number }}">上一页</a>
+                <a class='active' href="?page={{ users.previous_page_number }}&per_page={{ per_page }}">上一页</a>
                 {% endif %}
                 <span class="current">
                     第 {{ users.number }} 页 / 共 {{ users.paginator.num_pages }} 页</span>
                 {% if users.has_next %}
-                <a class='active' href="?page={{ users.next_page_number }}">下一页</a>
+                <a class='active' href="?page={{ users.next_page_number }}&per_page={{ per_page }}">下一页</a>
                 {% endif %}
             </li>
         </ul>
     </nav>
+    <!-- 添加每页条数选择框 -->
+    <select id="per-page-select" onchange="changePerPage(this.value)">
+        {% for option in per_page_options %}
+        <option value="{{ option }}" {% if option == per_page %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+    </select>
 </div>
 
 
@@ -138,5 +144,16 @@
             }
         });
     }
+
+    function changePerPage(value) {
+            // 获取当前页面的URL
+            var currentUrl = window.location.href;
+            // 去除原有的page和per_page参数（如果有的话）
+            currentUrl = currentUrl.split('?')[0];
+            // 添加新的per_page参数和选择的值，并设置page参数为1，表示定位到第一页
+            currentUrl += '?page=1&per_page=' + value;
+            // 跳转到新的URL
+            window.location.href = currentUrl;
+        }
 </script>
 {% endblock %}

@@ -52,7 +52,7 @@
                         <td><input type="checkbox" name="testscenario_ids" value="{{ testscenario.id }}"></td>
                         <td>{{ forloop.counter }}</td> <!-- Serial number -->
                         <td>{{ testscenario.name }}</td>
-                        <td> <button class="btn btn-sm btn-primary" onclick="openModal({{ testscenario.id }})">添加测试用例</button>
+                        <td> <button class="btn btn-sm btn-primary" onclick="openModal('{{ testscenario.id }}')">添加测试用例</button>
                         </td>
                         <td>{{ testscenario.description }}</td>
                       
@@ -62,7 +62,7 @@
                             <!-- Edit and Delete buttons -->
                             
                             <a href="{% url 'testscenario_update' testscenario.id %}" class="btn btn-sm btn-warning">编辑</a>
-                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal({{ testscenario.id }})">删除</button> 
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal('{{ testscenario.id }}')">删除</button> 
                             <button class="run-btn" data-id="{{ testscenario.id }}" class="btn btn-sm btn-secondary">
                                 运行
                             </button>
@@ -94,6 +94,12 @@
             </li>
         </ul>
     </nav>
+     <!-- 添加每页条数选择框 -->
+     <select id="per-page-select" onchange="changePerPage(this.value)">
+        {% for option in per_page_options %}
+        <option value="{{ option }}" {% if option == per_page %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+    </select>
 </div>
 
 

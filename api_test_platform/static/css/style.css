@@ -84,3 +84,11 @@ table {
     transform: translateX(-50%);  /* 水平居中 */
     z-index: 9999;  /* 确保在其他元素上层 */
 }
+#per-page-select {
+    width: 50px; 
+    height: 50px;/* 根据需要调整宽度值，这里设置为60px，可自行修改 */
+}
+
+#testcaseModal{
+    width:600px;
+}

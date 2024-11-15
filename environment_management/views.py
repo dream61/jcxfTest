@@ -15,11 +15,26 @@ def environment_list(request):
     else:
         environments = Environment.objects.all()
     # 分页设置  
-    paginator = Paginator(environments, 10)  # 每页显示10个项目
+    per_page = request.GET.get('per_page', 10)
+    try:
+        per_page = int(per_page)
+        if per_page <= 0:
+            per_page = 10
+    except ValueError:
+        per_page = 10
+
+    # 分页设置，使用处理后的每页显示条数
+    paginator = Paginator(environments, per_page)
     page_number = request.GET.get('page')
+    if page_number is None:
+        page_number = 1
     environments_page = paginator.get_page(page_number)
 
-    return render(request, 'environments/environment_list.html', {'environments': environments_page, 'paginator': paginator})
+    # 构建可供选择的每页条数选项列表，这里示例为[5, 10, 15, 20]，可根据需求修改
+    per_page_options = [5, 10, 15, 20]
+
+    return render(request, 'environments/environment_list.html', {'environments': environments_page, 'paginator': paginator,'per_page': per_page,
+        'per_page_options': per_page_options})
 
 @login_required
 def environment_search(request):

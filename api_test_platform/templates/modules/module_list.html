@@ -74,7 +74,7 @@
                         <td>
                             <a href="{% url 'module_detail' module.id %}" class="btn btn-sm btn-info">查看</a>
                             <a href="{% url 'module_update' module.id %}" class="btn btn-sm btn-warning">编辑</a>
-                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal({{ module.id }})">删除</button> 
+                            <button class="btn btn-sm btn-danger" onclick="openDeleteModal('{{ module.id }}')">删除</button> 
                         </td> <!-- View button -->
                     </tr>
                     {% empty %}
@@ -103,6 +103,12 @@
                 </li>
             </ul>
         </nav>
+         <!-- 添加每页条数选择框 -->
+     <select id="per-page-select" onchange="changePerPage(this.value)">
+        {% for option in per_page_options %}
+        <option value="{{ option }}" {% if option == per_page %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+    </select>
     </div>
 
 </div>
